@@ -1,17 +1,20 @@
 import aiohttp
 import datetime as dt
+import time
 from Handlers.logger import logger
 import json
 class SP_APIHttp():
     def __init__(self, bot) -> None:
         self.bot = bot
-        self.headers={"Authorization":f"{self.bot.API_KEY}"}
+        self.headers={
+            'Content-Type': 'application/json',
+            "Authorization":f"{self.bot.API_KEY}"
+            }
         
     async def get_member(self, id):
         async with aiohttp.ClientSession(headers=self.headers) as session:
             async with session.get(f"https://api.apparyllis.com/v1/member/{self.bot.SYSTEM_ID}/{id}") as r:
                 return await r.json()
-     
      
     async def get_fronters(self):
         self.bot.fronters={}
@@ -32,8 +35,8 @@ class SP_APIHttp():
                 "customStatus": "",
                 "custom": False,
                 "live": True,
-                "startTime": dt.datetime.now().microsecond,
-                "endTime": 0,
+                "startTime": round(time.time() * 1000),
+                "endTime": round(time.time() * 1000),
                 "member": self.bot.members[member]["spid"]
             }
             async with session.post(f"https://api.apparyllis.com/v1/frontHistory", json=json) as r:
@@ -53,10 +56,10 @@ class SP_APIHttp():
             try:
                 json={
                     "customStatus": "",
-                    "custom": False,
+                    "custom": True,
                     "live": False,
                     "startTime": self.bot.fronters[member]["front"]["startTime"],
-                    "endTime": dt.datetime.now().microsecond
+                    "endTime": round(time.time() * 1000)
                 }
                 async with session.patch(f"https://api.apparyllis.com/v1/frontHistory/{self.bot.fronters[member]['docid']}", json=json) as r:
                     if r.status == 200:

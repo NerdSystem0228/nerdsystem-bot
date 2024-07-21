@@ -10,11 +10,11 @@ class SPDispatcher(BaseDispatcher):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
     
-    def on_front(self, member, colour):
-        self.bot.dispatch("front", member=member, colour=colour)
+    def on_front(self, member, colour, live):
+        self.bot.dispatch("front", member=member, colour=colour, live=live)
         
-    def on_unfront(self, member, colour):
-        self.bot.dispatch("unfront", member=member, colour=colour)
+    def on_unfront(self, member, colour, live):
+        self.bot.dispatch("unfront", member=member, colour=colour, live=live)
     
     async def on_connect(self):
         return await self.ws.send(json.dumps({"op":"authenticate", "token":f"{self.bot.API_KEY}"}))
@@ -28,9 +28,9 @@ class SPDispatcher(BaseDispatcher):
             member=self.bot.whois(json_message["results"][0]["content"]["member"])
             colour=self.bot.whatcolor(self.bot.whois(json_message["results"][0]["content"]["member"]))
             if json_message["results"][0]["content"]["live"]:
-                self.on_front(member, colour)
+                self.on_front(member, colour, json_message["results"][0]["content"]["live"])
             else:
-                self.on_unfront(member, colour)
+                self.on_unfront(member, colour, json_message["results"][0]["content"]["live"])
             
         except json.decoder.JSONDecodeError as e:
             if "pong" in message:
