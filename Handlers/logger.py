@@ -30,7 +30,7 @@ class LoggingFormatter(logging.Formatter):
         formatter = logging.Formatter(format, "%Y-%m-%d %H:%M:%S", style="{")
         return formatter.format(record)
 
-logger = logging.getLogger("DiscordSvB_Bot")
+logger = logging.getLogger("NerdSystemBot")
 logger.setLevel(logging.INFO)
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(LoggingFormatter())
