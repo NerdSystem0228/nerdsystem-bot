@@ -10,20 +10,12 @@ class RemoveAlterFront(commands.Cog):
         self.bot = bot
        
     @commands.command(name="removealterfront")
-    async def removealterfront_ctx(self, ctx: commands.Context):
+    async def removealterfront_ctx(self, ctx: commands.Context, alter: discord.Member):
         if not self.bot.whois(ctx.message.author.id):
             await ctx.send(embed=self.create_error_embed("Você não é um membro do NerdSystem"))
             return
         
-        first=ctx.message.content.split()[0]
-        txt=ctx.message.content.replace(first, "").strip()
-        member=None
-        if txt.split():
-            member=txt.split()[0]
-        else:
-            member=txt
-        memberid=ctx.guild.get_member(int(member.replace("<", "").replace(">", "").replace("@", ""))).id
-        member=self.bot.whois(memberid)
+        member=self.bot.whois(alter.id)
         if not member:
             await ctx.send(embed=self.create_error_embed("Este usuário não é um alter do NerdSystem"))
             return

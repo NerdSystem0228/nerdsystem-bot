@@ -19,6 +19,9 @@ class Bot(commands.Bot):
                          intents=intents,
                          application_id=os.getenv("APPLICATION_ID"),)
         self.FRONT_CHANNEL=int(os.getenv("FRONT_CHANNEL"))
+        self.RULE_CHANNEL=int(os.getenv("RULE_CHANNEL"))
+        self.WELCOME_CHANNEL=int(os.getenv("WELCOME_CHANNEL"))
+        self.BYE_CHANNEL=int(os.getenv("BYE_CHANNEL"))
         self.SYSTEM_SERVER=int(os.getenv("SYSTEM_SERVER"))
         self.SYSTEM_ID=os.getenv("SYSTEM_ID")
         self.API_KEY=os.getenv("API_KEY")

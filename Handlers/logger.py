@@ -31,7 +31,7 @@ class LoggingFormatter(logging.Formatter):
         return formatter.format(record)
 
 logger = logging.getLogger("NerdSystemBot")
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(LoggingFormatter())
 file_handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
