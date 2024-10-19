@@ -4,6 +4,7 @@ from discord import app_commands
 import discord
 from discord import Embed
 import datetime as dt
+import asyncio
 class Fronters(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -11,11 +12,11 @@ class Fronters(commands.Cog):
     @commands.command(name="fronters")
     async def fronters_ctx(self, ctx: commands.Context):
         await self.bot.APIHttp.get_fronters()
-        embeds= self.create_fronters_embeds(self.bot.fronters)
+        embeds=await self.create_fronters_embeds(self.bot.fronters)
         if embeds:
             await ctx.send(embeds=embeds)
             return
-        embed=self.create_error_embed("Ninguém está frontando no momento")
+        embed= self.create_error_embed("Ninguém está frontando no momento")
         await ctx.send(embed=embed)
         
     @app_commands.command(
@@ -23,23 +24,24 @@ class Fronters(commands.Cog):
             description="Mostra as alters que estão no front")
     async def fronters(self, interaction: Interaction):
         await self.bot.APIHttp.get_fronters()
-        embeds= self.create_fronters_embeds(self.bot.fronters)
+        await interaction.response.defer(thinking=True)
+        embeds=await self.create_fronters_embeds(self.bot.fronters)
         if embeds:
-            await interaction.response.send_message(embeds=embeds)
+            await interaction.followup.send(embeds=embeds)
             return
         embed=self.create_error_embed("Ninguém está frontando no momento")
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
      
     def create_error_embed(self, title):
         embed=Embed(title=title, color=discord.Color.red())
         embed.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar.url)
         return embed    
-    def create_fronters_embeds(self, fronters):
+    async def create_fronters_embeds(self, fronters):
         embedList=[]
         print(fronters)
         for i in fronters:
             print(i)
-            embed=Embed(title=i, color=self.bot.whatcolor(i)(), timestamp=dt.datetime.fromtimestamp(fronters[i]["front"]["startTime"]/1000.0))
+            embed=Embed(title=i, color=await self.bot.get_member_color(i), timestamp=dt.datetime.fromtimestamp(fronters[i]["front"]["startTime"]/1000.0))
             embed.set_footer(text="Está frontando desde", icon_url= self.bot.get_guild(self.bot.SYSTEM_SERVER).get_member(self.bot.members[i]["dcid"]).avatar.url)
             embedList.append(embed)
         return embedList
