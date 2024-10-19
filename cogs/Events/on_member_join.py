@@ -8,7 +8,7 @@ class OnMemberJoin(commands.Cog):
         self.bot = bot 
         
     @commands.Cog.listener("on_member_join")
-    async def on_front(self, member): 
+    async def on_member_join(self, member): 
         embed=self.create_welcome_embed(member)
         await self.bot.get_channel(self.bot.WELCOME_CHANNEL).send(member.mention, embed=embed)
     
