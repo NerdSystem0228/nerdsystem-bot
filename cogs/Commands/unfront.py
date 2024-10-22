@@ -26,7 +26,6 @@ class UnFront(commands.Cog):
             await ctx.send(embed=self.create_error_embed("Não foi possível se conectar ao Simply Plural API"))
         
     async def send_message(self, r, interaction: Interaction, member):
-        await interaction.response.defer(ephemeral=True, thinking=True)
         if isinstance(r, dict) and not r["alreadyonfront"]:
             await interaction.followup.send(embed=self.create_error_embed("Você não está no front"), ephemeral=True)
             return
@@ -40,6 +39,7 @@ class UnFront(commands.Cog):
             name = "unfront",
             description="Use this command to enter to the front")
     async def unfront(self, interaction: Interaction):
+        await interaction.response.defer(ephemeral=True, thinking=True)
         member=self.bot.whois(interaction.user.id)
         if not member:
             await interaction.followup.send(embed=self.create_error_embed("Você não é um alter do NerdSystem"), ephemeral=True)
