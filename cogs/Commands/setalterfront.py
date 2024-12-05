@@ -37,7 +37,8 @@ class SetAlterFront(commands.Cog):
         else:
             await interaction.followup.send(embed=self.create_error_embed("Não foi possível se conectar ao Simply Plural API"), ephemeral=True)
                 
-    
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)    
     @app_commands.command(
             name = "setalterfront",
             description="Use this command to set to the front")
@@ -68,4 +69,4 @@ class SetAlterFront(commands.Cog):
         return embed
 
 async def setup(bot):
-    await bot.add_cog(SetAlterFront(bot), guilds=[discord.Object(id=bot.SYSTEM_SERVER)])
+    await bot.add_cog(SetAlterFront(bot))

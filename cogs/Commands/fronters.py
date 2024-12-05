@@ -18,24 +18,22 @@ class Fronters(commands.Cog):
             return
         embed= self.create_error_embed("Ninguém está frontando no momento")
         await ctx.send(embed=embed)
-        
-    @app_commands.command(
-            name = "fronters",
-            description="Mostra as alters que estão no front")
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+    @app_commands.command(name="fronters", description="Mostra as alters que estão no front")
     async def fronters(self, interaction: Interaction):
-        await self.bot.APIHttp.get_fronters()
         await interaction.response.defer(thinking=True)
+        await self.bot.APIHttp.get_fronters()
         embeds=await self.create_fronters_embeds(self.bot.fronters)
         if embeds:
             await interaction.followup.send(embeds=embeds)
             return
         embed=self.create_error_embed("Ninguém está frontando no momento")
         await interaction.followup.send(embed=embed)
-     
     def create_error_embed(self, title):
         embed=Embed(title=title, color=discord.Color.red())
         embed.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar.url)
-        return embed    
+        return embed
     async def create_fronters_embeds(self, fronters):
         embedList=[]
         print(fronters)
@@ -47,4 +45,4 @@ class Fronters(commands.Cog):
         return embedList
 
 async def setup(bot):
-    await bot.add_cog(Fronters(bot), guilds=[discord.Object(bot.SYSTEM_SERVER)])
+    await bot.add_cog(Fronters(bot))

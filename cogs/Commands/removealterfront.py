@@ -38,7 +38,8 @@ class RemoveAlterFront(commands.Cog):
         else:
             await interaction.followup.send(embed=self.create_error_embed("Não foi possível se conectar ao Simply Plural API"), ephemeral=True)
                 
-        
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)        
     @app_commands.command(
             name = "removealterfront",
             description="Use this command to remove from front")
@@ -68,4 +69,4 @@ class RemoveAlterFront(commands.Cog):
         return embed
 
 async def setup(bot):
-    await bot.add_cog(RemoveAlterFront(bot), guilds=[discord.Object(id=bot.SYSTEM_SERVER)])
+    await bot.add_cog(RemoveAlterFront(bot))

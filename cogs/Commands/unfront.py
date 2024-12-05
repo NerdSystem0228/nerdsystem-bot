@@ -34,7 +34,8 @@ class UnFront(commands.Cog):
         else:
             await interaction.followup.send(embed=self.create_error_embed("Não foi possível se conectar ao Simply Plural API"), ephemeral=True)
                     
-
+    @app_commands.allowed_installs(guilds=True, users=True)
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     @app_commands.command(
             name = "unfront",
             description="Use this command to enter to the front")
@@ -59,4 +60,4 @@ class UnFront(commands.Cog):
         embed.set_author(name=self.bot.user.display_name, icon_url=self.bot.user.avatar.url)
         return embed
 async def setup(bot):
-    await bot.add_cog(UnFront(bot), guilds=[discord.Object(id=bot.SYSTEM_SERVER)])
+    await bot.add_cog(UnFront(bot))
