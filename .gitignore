@@ -178,3 +178,4 @@ discord.log
 
 start.py
 start.sh
+docker-compose.yml
