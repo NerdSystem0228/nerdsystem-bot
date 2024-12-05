@@ -16,7 +16,7 @@ class OnMusicSent(commands.Cog):
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }],
-            'outtmpl': '/home/ubuntu/hdd/share/songs/%(title)s.%(ext)s'
+            'outtmpl': '/songs/%(title)s.%(ext)s'
         }
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
