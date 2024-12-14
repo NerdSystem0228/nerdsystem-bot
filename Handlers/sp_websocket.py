@@ -51,7 +51,7 @@ class SP_WebSocket():
                     "Socket error - retrying connection in {} sec (Ctrl-C to quit)".format(self.sleep_time))
                 await asyncio.sleep(self.sleep_time)
                 continue
-            except websockets.exceptions.InvalidStatusCode:
+            except websockets.exceptions.InvalidStatus:
                 logger.debug("502 HTTP Code")
                 logger.debug("Retrying connection in {} sec (Ctrl-C to quit)".format(self.sleep_time))
                 await asyncio.sleep(self.sleep_time)
