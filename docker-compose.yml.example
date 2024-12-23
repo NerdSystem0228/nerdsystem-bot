@@ -14,3 +14,6 @@ services:
        SYSTEM_ID:
        API_KEY:
        SYSTEM_SERVER:
+    volumes:
+      - /path/to/songs:/songs
+      - /path/to/cookies.txt:/cookies.txt

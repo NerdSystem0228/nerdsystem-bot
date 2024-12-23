@@ -1,0 +1,7 @@
+.venv
+.env
+cookies.txt
+discord.log
+docker-compose.yml
+README.md
+.gitignore
