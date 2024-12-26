@@ -1,16 +1,17 @@
 from discord.ext import commands
+from bot import bot
 from discord import Embed
 import discord
 import datetime as dt
-from Handlers.logger import logger
+from utils.logger import logger
 class OnMemberRemove(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot 
+    def __init__(self):
+        pass
         
     @commands.Cog.listener("on_member_remove")
     async def on_member_remove(self, member): 
         embed=self.create_bye_embed(member)
-        await self.bot.get_channel(self.bot.BYE_CHANNEL).send(member.mention, embed=embed)
+        await bot.get_channel(bot.BYE_CHANNEL).send(member.mention, embed=embed)
 
     def create_bye_embed(self, member):
         embed=Embed(title=f"Tchauzinho {member.display_name}!", color=discord.Color.red(), timestamp=dt.datetime.now())
@@ -24,4 +25,4 @@ era um cuzão.
         embed.set_thumbnail(url=member.avatar.url)
         return embed
 async def setup(bot):
-    await bot.add_cog(OnMemberRemove(bot))
+    await bot.add_cog(OnMemberRemove())

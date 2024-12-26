@@ -1,12 +1,13 @@
 from discord.ext import commands
+from bot import bot
 from discord import Embed
 import datetime as dt
-from Handlers.logger import logger
+from utils.logger import logger
 import yt_dlp
 
 class OnMusicSent(commands.Cog):
-    def __init__(self, bot: commands.Bot):
-        self.bot = bot 
+    def __init__(self):
+        pass
     
     def download_song(self, URL):
         ydl_opts = {
@@ -27,7 +28,7 @@ class OnMusicSent(commands.Cog):
     
     @commands.Cog.listener("on_message")
     async def on_music_sent(self, msg: str): 
-        if msg.channel.id == self.bot.MUSIC_CHANNEL:
+        if msg.channel.id == bot.MUSIC_CHANNEL:
             test_list = ['.com', '.ru', '.net', '.org', '.info', '.biz', '.io', '.co', "https://", "http://"]
             link_matches = [ele for ele in test_list if(ele in msg.content)]
             if link_matches:
@@ -39,4 +40,4 @@ class OnMusicSent(commands.Cog):
         embed.set_image(url=url)
         return embed
 async def setup(bot):
-    await bot.add_cog(OnMusicSent(bot))
+    await bot.add_cog(OnMusicSent())
