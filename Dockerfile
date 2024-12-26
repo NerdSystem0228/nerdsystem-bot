@@ -1,7 +1,14 @@
-FROM python:3.12
+FROM python:3.10-slim
 
-COPY . .
-RUN apt-get -y update && apt-get -y upgrade && apt-get install -y ffmpeg
-RUN mkdir /songs
-RUN pip install -r ./requirements.txt
-CMD ["python", "./main.py"]
+# Install uv.
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Copy the application into the container.
+COPY . /app
+
+# Install the application dependencies.
+WORKDIR /app
+RUN uv sync --frozen --no-cache
+
+# Run the application.
+CMD ["uv", "run", "main.py"]
