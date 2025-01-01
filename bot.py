@@ -37,7 +37,7 @@ async def load_cogs():
                 exception = f"{type(e).__name__}: {e}"
                 logger.error(
                     f"Failed to load extension {i}\n{exception}"
-                )
+                )    
                 
 def whois(id):
         for i in bot.members:
