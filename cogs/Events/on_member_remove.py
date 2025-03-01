@@ -1,5 +1,5 @@
 from discord.ext import commands
-from bot import bot
+from bot import bot, data
 from discord import Embed
 import discord
 import datetime as dt
@@ -11,7 +11,7 @@ class OnMemberRemove(commands.Cog):
     @commands.Cog.listener("on_member_remove")
     async def on_member_remove(self, member): 
         embed=self.create_bye_embed(member)
-        await bot.get_channel(bot.BYE_CHANNEL).send(member.mention, embed=embed)
+        await bot.get_channel(data.BYE_CHANNEL).send(member.mention, embed=embed)
 
     def create_bye_embed(self, member):
         embed=Embed(title=f"Tchauzinho {member.display_name}!", color=discord.Color.red(), timestamp=dt.datetime.now())

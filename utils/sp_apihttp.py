@@ -2,36 +2,36 @@ import aiohttp
 import discord
 import time
 from utils.logger import logger
-from bot import whois, bot
+from bot import whois, data, MEMBERS, runtime
 headers={
             'Content-Type': 'application/json',
-            "Authorization":f"{bot.API_KEY}"
+            "Authorization":f"{data.API_KEY}"
         }
         
 async def get_member(id):
     async with aiohttp.ClientSession(headers=headers) as session:
-        async with session.get(f"https://api.apparyllis.com/v1/member/{bot.SYSTEM_ID}/{id}") as r:
+        async with session.get(f"https://api.apparyllis.com/v1/member/{data.SYSTEM_ID}/{id}") as r:
             if r.status == 200:    
                 json= await r.json()
                 return json
 
 async def get_member_color(member):
-        content=await get_member(bot.members[member]["spid"])
+        content=await get_member(MEMBERS[member]["spid"])
         t=tuple(int(content["content"]["color"].lstrip("#")[i:i+2], 16) for i in (0, 2, 4))
         return discord.Color.from_rgb(t[0], t[1], t[2]).value
 
 async def get_fronters():
-    bot.fronters={}
+    runtime.fronters={}
     async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(f"https://api.apparyllis.com/v1/fronters/") as r:
             json= await r.json()
             for i in json:
-                bot.members[whois(i["content"]["member"])]["pastlive"] = True
-                bot.fronters[whois(i["content"]["member"])]={"docid":f"{i['id']}", "front":i["content"]}
+                MEMBERS[whois(i["content"]["member"])]["pastlive"] = True
+                runtime.fronters[whois(i["content"]["member"])]={"docid":f"{i['id']}", "front":i["content"]}
         
 async def set_alter_front(member):
     await get_fronters()
-    for i in bot.fronters:
+    for i in runtime.fronters:
         if member in i:
             return {"alreadyonfront":True}
         
@@ -42,7 +42,7 @@ async def set_alter_front(member):
             "live": True,
             "startTime": round(time.time() * 1000),
             "endTime": round(time.time() * 1000),
-            "member": bot.members[member]["spid"]
+            "member": MEMBERS[member]["spid"]
         }
 
         async with session.post(f"https://api.apparyllis.com/v1/frontHistory", json=json) as r:
@@ -64,12 +64,12 @@ async def remove_alter_front(member):
                 "customStatus": "",
                 "custom": True,
                 "live": False,
-                "startTime": bot.fronters[member]["front"]["startTime"],
+                "startTime": runtime.fronters[member]["front"]["startTime"],
                 "endTime": round(time.time() * 1000)
             }
             
-            if bot.fronters[member]["front"]["live"]:        
-                async with session.patch(f"https://api.apparyllis.com/v1/frontHistory/{bot.fronters[member]['docid']}", json=json) as r:
+            if runtime.fronters[member]["front"]["live"]:        
+                async with session.patch(f"https://api.apparyllis.com/v1/frontHistory/{runtime.fronters[member]['docid']}", json=json) as r:
                     if r.status == 200:
                         logger.info(f"{member} was removed from front list successfully")
                         return True

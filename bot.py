@@ -1,32 +1,46 @@
 from discord.ext import commands
 import glob
 import discord
-import os
 import json
 from dotenv import load_dotenv
 from utils.logger import logger
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
 
 # Sets bot intents
 intents = discord.Intents(messages=True, message_content=True, guilds=True, members=True)
 
-#Creates bot instance
-bot = commands.Bot(command_prefix=os.getenv("PREFIX"), 
-                         intents=intents,
-                         application_id=os.getenv("APPLICATION_ID"))
-
 #Load bot data
-bot.FRONT_CHANNEL=int(os.getenv("FRONT_CHANNEL"))
-bot.RULE_CHANNEL=int(os.getenv("RULE_CHANNEL"))
-bot.WELCOME_CHANNEL=int(os.getenv("WELCOME_CHANNEL"))
-bot.BYE_CHANNEL=int(os.getenv("BYE_CHANNEL"))
-bot.MUSIC_CHANNEL=int(os.getenv("MUSIC_CHANNEL"))
-bot.SYSTEM_SERVER=int(os.getenv("SYSTEM_SERVER"))
-bot.SYSTEM_ID=os.getenv("SYSTEM_ID")
-bot.API_KEY=os.getenv("API_KEY")
-bot.fronters={}
-bot.members=json.load(open("members.json"))
+class Runtime:
+    fronters = {}
+    
+runtime = Runtime()    
+MEMBERS=json.load(open("members.json"))
+class Data(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="ignore",
+    ) 
+    TOKEN: str
+    FRONT_CHANNEL: int
+    RULE_CHANNEL: int
+    WELCOME_CHANNEL: int
+    BYE_CHANNEL: int
+    MUSIC_CHANNEL: int
+    SYSTEM_SERVER: int
+    SYSTEM_ID: str
+    API_KEY: str
+    PREFIX: str
+    APPLICATION_ID: str
+    RCON_PASSWORD: str
+    
+data = Data() # type: ignore
+
+#Creates bot instance
+bot = commands.Bot(command_prefix=data.PREFIX,  # type: ignore
+                         intents=intents,
+                         application_id=data.APPLICATION_ID)
 
 async def load_cogs():
     for i in glob.glob("cogs/**/*.py", recursive=True):
@@ -40,14 +54,14 @@ async def load_cogs():
                 )    
                 
 def whois(id):
-        for i in bot.members:
+        for i in MEMBERS:
             if isinstance(id, str):
                 continue
-            if bot.members[i]["dcid"] == id:
+            if MEMBERS[i]["dcid"] == id:
                 return i
             
-        for i in bot.members:
+        for i in MEMBERS:
             if isinstance(id, int):
                 continue
-            if id in bot.members[i]["spid"]:
+            if id in MEMBERS[i]["spid"]:
                 return i

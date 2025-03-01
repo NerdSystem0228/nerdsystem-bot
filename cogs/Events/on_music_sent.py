@@ -1,5 +1,5 @@
 from discord.ext import commands
-from bot import bot
+from bot import data
 from discord import Embed
 import datetime as dt
 from utils.logger import logger
@@ -28,7 +28,7 @@ class OnMusicSent(commands.Cog):
     
     @commands.Cog.listener("on_message")
     async def on_music_sent(self, msg: str): 
-        if msg.channel.id == bot.MUSIC_CHANNEL:
+        if msg.channel.id == data.MUSIC_CHANNEL:
             test_list = ['.com', '.ru', '.net', '.org', '.info', '.biz', '.io', '.co', "https://", "http://"]
             link_matches = [ele for ele in test_list if(ele in msg.content)]
             if link_matches:

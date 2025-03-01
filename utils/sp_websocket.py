@@ -2,7 +2,7 @@ import aiohttp
 import aiohttp.client_exceptions
 import asyncio
 from utils.logger import logger
-from bot import whois, bot
+from bot import whois, bot, data, MEMBERS
 from utils.sp_apihttp import get_member_color
         
 def on_front(member, color):
@@ -21,7 +21,7 @@ async def listen_forever():
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.ws_connect(url="wss://api.apparyllis.com/v1/socket", autoping=True) as ws:
-                    await ws.send_json({"op":"authenticate", "token":bot.API_KEY})
+                    await ws.send_json({"op":"authenticate", "token":data.API_KEY})
                     asyncio.create_task(ping(ws))
                     async for msg in ws:
                         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -48,15 +48,15 @@ async def listen_forever():
                         member=whois(json_message["results"][0]["content"]["member"])
                         color=await get_member_color(member)
 
-                        if json_message["results"][0]["content"]["live"] and not bot.members[member]["pastlive"]:
-                            bot.members[member]["pastlive"] = True
+                        if json_message["results"][0]["content"]["live"] and not MEMBERS[member]["pastlive"]:
+                            MEMBERS[member]["pastlive"] = True
                             on_front(member, color)
-                        elif not json_message["results"][0]["content"]["live"] and bot.members[member]["pastlive"]:
-                            bot.members[member]["pastlive"] = False
+                        elif not json_message["results"][0]["content"]["live"] and MEMBERS[member]["pastlive"]:
+                            MEMBERS[member]["pastlive"] = False
                             on_unfront(member, color)
                             
                 
-                    ws.close()
+                    await ws.close()
                     logger.info("Websocket connection closed, trying again...")
             except aiohttp.client_exceptions.ClientError as e:
                 logger.info(f"Websocket falhou conexão: {e}")
