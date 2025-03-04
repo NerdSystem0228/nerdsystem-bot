@@ -14,6 +14,7 @@ class Whitelist(commands.Cog):
         async with client as pot_client:
             response = await pot_client.send(f"whitelist add {name}")
             await ctx.send(embed=self.create_whitelist_embed(response))
+            await pot_client.send(f"whitelist reload")
     async def whitelist(self, interaction: Interaction, name: str):
         await interaction.response.defer(thinking=True)
         
@@ -21,7 +22,7 @@ class Whitelist(commands.Cog):
         async with client as pot_client:
             response = await pot_client.send(f"whitelist add {name}")
             await interaction.followup.send(embed=self.create_whitelist_embed(response))
-            
+            await pot_client.send(f"whitelist reload")
     def create_whitelist_embed(self, response):
         if "Player is already whitelisted" in response:
             return Embed(title="Você já foi adicionado ao whitelist do servidor!", color=discord.Color.red().value)

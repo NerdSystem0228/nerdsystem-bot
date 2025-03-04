@@ -4,7 +4,7 @@ import platform
 from discord.ext import commands
 from dotenv import load_dotenv
 from utils.logger import logger
-from bot import load_cogs, bot
+from bot import load_cogs, bot, data
 from utils.sp_apihttp import get_fronters
 from utils.sp_websocket import listen_forever
 import asyncio
@@ -21,4 +21,4 @@ async def setup_hook():
 bot.setup_hook = setup_hook
 
 #Runs the bot
-bot.run(os.getenv("TOKEN"))
+bot.run(data.TOKEN)
